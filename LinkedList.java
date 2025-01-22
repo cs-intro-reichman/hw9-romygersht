@@ -234,14 +234,14 @@ public class LinkedList {
 	 * @throws IllegalArgumentException
 	 *         if index is negative or greater than or equal to size
 	 */
-/* 		public void remove(int index) {
+		public void remove(int index) {
 			if (index < 0 || index >= size) {
 				throw new IllegalArgumentException("Index must be between 0 and size");
 			}
 			remove(getNode(index));
 			size --;
-		}*/
-		public void remove(int index) {
+		}
+	/*	public void remove(int index) {
 			if (index < 0 || index >= size) {
 				throw new IllegalArgumentException("Index must be between 0 and size");
 			}
@@ -323,6 +323,6 @@ public class LinkedList {
 			str += current.block + " ";
 			current = current.next;
 		}
-		return str.substring(0, str.length()-1) + ")";
+		return str.substring(0, str.length()-1) + " ";
 	}
 }
