@@ -84,32 +84,42 @@ public class LinkedList {
 	 */
 	public void add(int index, MemoryBlock block) {
 		Node newNode = new Node(block);
+	
 		if (index < 0 || index > size) {
 			throw new IllegalArgumentException("Index must be between 0 and size");
 		}
+	
+		// הוספה בתחילת הרשימה (index == 0)
 		if (index == 0) {
-		newNode.next = first; 
-        first = newNode;
-		if (size == 0) { // אם הרשימה הייתה ריקה קודם, אז גם last מצביע על הצומת החדש
-			last = newNode;
-		}
-		}
-
-		if (index == size) {
-			if (last != null) {
-				last.next = newNode;
+			newNode.next = first; // הצומת החדש מצביע על הצומת הקודם של הראשון
+			first = newNode; // עכשיו first מצביע על הצומת החדש
+	
+			// אם הרשימה הייתה ריקה, אז גם last מצביע על הצומת החדש
+			if (size == 0) {
+				last = newNode;
 			}
-			last = newNode;
+		} 
+		// הוספה בסוף הרשימה (index == size)
+		else if (index == size) {
+			if (last != null) {
+				last.next = newNode; // הצומת האחרון מצביע על הצומת החדש
+			}
+			last = newNode; // עכשיו last מצביע על הצומת החדש
+		} 
+		// הוספה באמצע הרשימה
+		else {
+			Node current = first;
+			// מציאת הצומת הקודם
+			for (int i = 0; i < index - 1; i++) {
+				current = current.next;
+			}
+			newNode.next = current.next;  // הצומת החדש מצביע על הצומת הבא
+			current.next = newNode;  // הצומת הקודם מצביע על הצומת החדש
 		}
-
-		Node current = first;
-		for (int i = 0; i < index-1; i++) {
-			current = current.next;
-		}
-		newNode.next = current.next; //newNode will point on the next one
-		current.next = newNode; //the one before the index will point on newNode
-		size++;
+	
+		size++; // עדכון גודל הרשימה
 	}
+	
 	
 
 	/**
