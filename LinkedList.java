@@ -89,35 +89,33 @@ public class LinkedList {
 			throw new IllegalArgumentException("Index must be between 0 and size");
 		}
 	
-		// הוספה בתחילת הרשימה (index == 0)
-		if (index == 0) {
-			newNode.next = first; // הצומת החדש מצביע על הצומת הקודם של הראשון
-			first = newNode; // עכשיו first מצביע על הצומת החדש
+		if (index == 0) { 
+			newNode.next = first; 
+			first = newNode; 
 	
-			// אם הרשימה הייתה ריקה, אז גם last מצביע על הצומת החדש
-			if (size == 0) {
+			if (size == 0) { // if the size is 0, also the last become the new node
 				last = newNode;
 			}
 		} 
-		// הוספה בסוף הרשימה (index == size)
-		else if (index == size) {
+		
+		else if (index == size) { // adding the node to be the last 
 			if (last != null) {
-				last.next = newNode; // הצומת האחרון מצביע על הצומת החדש
+				last.next = newNode; 
 			}
-			last = newNode; // עכשיו last מצביע על הצומת החדש
+			last = newNode; 
 		} 
-		// הוספה באמצע הרשימה
-		else {
+		
+		else { // the index is in the mid of the list
 			Node current = first;
-			// מציאת הצומת הקודם
+			//finding the node before the index
 			for (int i = 0; i < index - 1; i++) {
 				current = current.next;
 			}
-			newNode.next = current.next;  // הצומת החדש מצביע על הצומת הבא
-			current.next = newNode;  // הצומת הקודם מצביע על הצומת החדש
+			newNode.next = current.next;  // the new node pointing on thr next
+			current.next = newNode;  // the one before pointing on the new node
 		}
 	
-		size++; // עדכון גודל הרשימה
+		size++; 
 	}
 	
 	
@@ -236,9 +234,13 @@ public class LinkedList {
 	 * @throws IllegalArgumentException
 	 *         if index is negative or greater than or equal to size
 	 */
-	public void remove(int index) {
-		remove(getNode(index));
+		public void remove(int index) {
+			if (index < 0 || index >= size) {
+				throw new IllegalArgumentException("Index must be between 0 and size");
+			}
+			remove(getNode(index));
 		}
+		
 
 	/**
 	 * Removes from this list the node pointing to the given memory block.
