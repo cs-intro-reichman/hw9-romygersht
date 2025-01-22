@@ -276,32 +276,43 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-			if (first == null) {
-				throw new IllegalArgumentException("The list is empty.");
+		if (block == null) {
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
+	
+		if (first == null) {
+			throw new IllegalArgumentException("index must be between 0 and size");
+		}
+	
+		// אם הצומת הראשונה היא הצומת שאנחנו רוצים להסיר
+		if (first.block == block) {
+			first = first.next;
+			if (first == null) { 
+				last = null;
 			}
-		
-			// if the first node is pointing 
-			if (first.block == block) {
-				first = first.next;
-				if (first == null) { 
-					last = null;
+			size--;
+			return;
+		}
+	
+		// אחרת, מחפשים את הצומת
+		Node current = first;
+		while (current != null && current.next != null) {
+			if (current.next.block == block) {
+				// אם מצאנו את הצומת, מסירים אותה
+				current.next = current.next.next;
+				if (current.next == null) {
+					last = current;  // אם הסרנו את הצומת האחרונה, צריך לעדכן את "last"
 				}
 				size--;
 				return;
 			}
-		
-			//else, finding node 
-			Node current = first;
-			while (current != null && current.next != null) {
-				if (current.next.block == block) {
-					remove(current.next);  
-					return;
-				}
-				current = current.next;
-			}
-		
-			throw new IllegalArgumentException("The given memory block is not in this list");
-		}	
+			current = current.next;
+		}
+	
+		// אם לא מצאנו את הצומת
+		throw new IllegalArgumentException("index must be between 0 and size");
+	}
+	
 
 	/**
 	 * Returns an iterator over this list, starting with the first element.
