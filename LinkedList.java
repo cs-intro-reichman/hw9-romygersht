@@ -238,34 +238,33 @@ public class LinkedList {
 			if (index < 0 || index >= size) {
 				throw new IllegalArgumentException("Index must be between 0 and size");
 			}
-			remove(getNode(index));
-			size --;
-		}
-	/*	public void remove(int index) {
-			if (index < 0 || index >= size) {
-				throw new IllegalArgumentException("Index must be between 0 and size");
-			}
-		
-			// במקרה של הסרה באינדקס תקני, אנחנו ניגשים לצומת המתאים
-			Node current = first;
+			
+			// אם אנחנו מסלקים את הצומת הראשון
 			if (index == 0) {
-				first = current.next;
-				if (first == null) { // אם הרשימה ריקה לאחר ההסרה, last צריך להיות null
+				first = first.next;
+				if (first == null) {  // אם הרשימה ריקה לאחר הסרה, גם last צריך להיות null
 					last = null;
 				}
-			} else {
-				Node previous = null;
-				for (int i = 0; i < index; i++) {
-					previous = current;
-					current = current.next;
-				}
-				previous.next = current.next; // מחברים את הצומת הקודם לצומת שאחריו
-				if (current.next == null) { // אם מדובר בצומת אחרון
-					last = previous;
-				}
+				size--;
+				return;
 			}
-			size--; // מעדכנים את הגודל
-		}*/
+			
+			// חיפוש הצומת שממוקם באינדקס הנתון
+			Node current = first;
+			for (int i = 0; i < index - 1; i++) {
+				current = current.next;  // מתקדמים עד הצומת לפני הצומת שנרצה להסיר
+			}
+		
+			// אם הצומת הנמצא אחרי current הוא הצומת שנרצה להסיר
+			if (current.next != null) {
+				current.next = current.next.next;
+				if (current.next == null) {  // אם הסרנו את הצומת האחרון, עדכון last
+					last = current;
+				}
+				size--;
+			}
+		}
+		
 		
 
 	/**
@@ -284,7 +283,6 @@ public class LinkedList {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 	
-		// אם הצומת הראשונה היא הצומת שאנחנו רוצים להסיר
 		if (first.block == block) {
 			first = first.next;
 			if (first == null) { 
@@ -294,14 +292,13 @@ public class LinkedList {
 			return;
 		}
 	
-		// אחרת, מחפשים את הצומת
 		Node current = first;
 		while (current != null && current.next != null) {
 			if (current.next.block == block) {
-				// אם מצאנו את הצומת, מסירים אותה
+			
 				current.next = current.next.next;
 				if (current.next == null) {
-					last = current;  // אם הסרנו את הצומת האחרונה, צריך לעדכן את "last"
+					last = current;  
 				}
 				size--;
 				return;
@@ -309,7 +306,7 @@ public class LinkedList {
 			current = current.next;
 		}
 	
-		// אם לא מצאנו את הצומת
+		
 		throw new IllegalArgumentException("index must be between 0 and size");
 	}
 	
