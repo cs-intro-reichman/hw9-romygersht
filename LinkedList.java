@@ -90,6 +90,9 @@ public class LinkedList {
 		if (index == 0) {
 		newNode.next = first; 
         first = newNode;
+		if (size == 0) { // אם הרשימה הייתה ריקה קודם, אז גם last מצביע על הצומת החדש
+			last = newNode;
+		}
 		}
 
 		if (index == size) {
@@ -99,7 +102,7 @@ public class LinkedList {
 			last = newNode;
 		}
 
-		Node current = newNode;
+		Node current = first;
 		for (int i = 0; i < index-1; i++) {
 			current = current.next;
 		}
@@ -107,6 +110,7 @@ public class LinkedList {
 		current.next = newNode; //the one before the index will point on newNode
 		size++;
 	}
+	
 
 	/**
 	 * Creates a new node that points to the given memory block, and adds it
