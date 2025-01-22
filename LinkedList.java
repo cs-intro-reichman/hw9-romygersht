@@ -239,7 +239,33 @@ public class LinkedList {
 				throw new IllegalArgumentException("Index must be between 0 and size");
 			}
 			remove(getNode(index));
+			size --;
 		}
+	/*	public void remove(int index) {
+			if (index < 0 || index >= size) {
+				throw new IllegalArgumentException("Index must be between 0 and size");
+			}
+		
+			// במקרה של הסרה באינדקס תקני, אנחנו ניגשים לצומת המתאים
+			Node current = first;
+			if (index == 0) {
+				first = current.next;
+				if (first == null) { // אם הרשימה ריקה לאחר ההסרה, last צריך להיות null
+					last = null;
+				}
+			} else {
+				Node previous = null;
+				for (int i = 0; i < index; i++) {
+					previous = current;
+					current = current.next;
+				}
+				previous.next = current.next; // מחברים את הצומת הקודם לצומת שאחריו
+				if (current.next == null) { // אם מדובר בצומת אחרון
+					last = previous;
+				}
+			}
+			size--; // מעדכנים את הגודל
+		}*/
 		
 
 	/**
@@ -254,22 +280,21 @@ public class LinkedList {
 				throw new IllegalArgumentException("The list is empty.");
 			}
 		
-			// אם הצומת הראשון מכיל את ה־block
+			// if the first node is pointing 
 			if (first.block == block) {
 				first = first.next;
-				if (first == null) {  // אם הרשימה התפנתה
+				if (first == null) { 
 					last = null;
 				}
 				size--;
 				return;
 			}
 		
-			// חפש את הצומת שמכיל את ה־block
+			//else, finding node 
 			Node current = first;
 			while (current != null && current.next != null) {
 				if (current.next.block == block) {
-					// מצאנו את הצומת שמכיל את ה־block
-					remove(current.next);  // הסר את הצומת באמצעות הפונקציה remove(Node node)
+					remove(current.next);  
 					return;
 				}
 				current = current.next;
@@ -289,7 +314,7 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		//// Replace the following statement with your code
+	    
 		return "";
 	}
 }
