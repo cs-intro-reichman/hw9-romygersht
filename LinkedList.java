@@ -239,34 +239,29 @@ public class LinkedList {
 				throw new IllegalArgumentException("Index must be between 0 and size");
 			}
 			
-			// אם אנחנו מסלקים את הצומת הראשון
 			if (index == 0) {
 				first = first.next;
-				if (first == null) {  // אם הרשימה ריקה לאחר הסרה, גם last צריך להיות null
+				if (first == null) {  
 					last = null;
 				}
 				size--;
 				return;
 			}
 			
-			// חיפוש הצומת שממוקם באינדקס הנתון
 			Node current = first;
 			for (int i = 0; i < index - 1; i++) {
-				current = current.next;  // מתקדמים עד הצומת לפני הצומת שנרצה להסיר
+				current = current.next;  
 			}
 		
-			// אם הצומת הנמצא אחרי current הוא הצומת שנרצה להסיר
 			if (current.next != null) {
 				current.next = current.next.next;
-				if (current.next == null) {  // אם הסרנו את הצומת האחרון, עדכון last
+				if (current.next == null) {  
 					last = current;
 				}
 				size--;
 			}
 		}
 		
-		
-
 	/**
 	 * Removes from this list the node pointing to the given memory block.
 	 * 

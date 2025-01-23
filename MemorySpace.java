@@ -57,10 +57,41 @@ public class MemorySpace {
 	 *        the length (in words) of the memory block that has to be allocated
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
-	public int malloc(int length) {		
-		//// Replace the following statement with your code
-		return -1;
+	public int malloc(int length) {
+		Node currentNode = freeList.getFirst(); // starting from the first node
+		
+		while (currentNode != null) { // searching for the right block
+			MemoryBlock freeBlock = currentNode.block;  // "taking" the block from the node
+			
+			// if the block is big enough
+			if (freeBlock.getLength() >= length) {
+				
+				// if the length matches exactly
+				if (freeBlock.getLength() == length) {
+					freeList.remove(currentNode);  // remove the block from freeList
+					allocatedList.addLast(freeBlock);  // add it to allocatedList
+					return freeBlock.getBaseAddress();  // returns the base address of the block
+				}
+	
+				// if the block's length is bigger, create a new block on the same address
+				MemoryBlock allocatedBlock = new MemoryBlock(freeBlock.getBaseAddress(), length);
+				allocatedList.addLast(allocatedBlock);  // adding the new block to allocatedList
+	
+				// update the free block's space
+				freeBlock.setLength(freeBlock.getLength() - length);  // update the size of the free block
+				freeBlock.setBaseAddress(freeBlock.getBaseAddress() + length);  // update the address of the free block
+	
+				return allocatedBlock.getBaseAddress();  // returns the new address of the allocated block
+			}
+	
+			// if the block isn't the right size, move to the next one
+			currentNode = currentNode.next;
+		}
+		
+		return -1;  // if no block found, return -1 to indicate allocation failed
 	}
+	
+		
 
 	/**
 	 * Frees the memory block whose base address equals the given address.

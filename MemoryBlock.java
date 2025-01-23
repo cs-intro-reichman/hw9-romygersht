@@ -20,6 +20,22 @@ public class MemoryBlock {
 		this.length = length;
 	}
 
+	 public int getBaseAddress() {
+        return baseAddress;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+	  public void setBaseAddress(int baseAddress) {
+        this.baseAddress = baseAddress;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
 	/**
 	 * Checks if this block has the same base address and length as the given block
 	 * 
