@@ -102,15 +102,18 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		Node currNode = allocatedList.getFirst();
+		Node currentNode = allocatedList.getFirst();
 
-		while (currNode != null) {
+		while (currentNode != null) {
+			MemoryBlock freeBlock = currentNode.block;
 
-			if (currNode.getBaseAddress.equals(address)) {
-
+			if (freeBlock.getBaseAddress() == address) {
+             allocatedList.remove(currentNode);
+			 freeList.addLast(freeBlock);
+			 return;
 			}
 
-			currNode = currNode.next;
+			currentNode = currentNode.next;
 		}
 	}
 	
