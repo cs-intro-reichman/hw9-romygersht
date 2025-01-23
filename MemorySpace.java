@@ -141,7 +141,36 @@ public class MemorySpace {
 	 * In this implementation Malloc does not call defrag.
 	 */
 	public void defrag() {
-		/// TODO: Implement defrag test
-		//// Write your code here
+		boolean merged;  // A flag to track whether any blocks were merged
+		do {
+			merged = false;  // Initially, no blocks have been merged
+			Node current = freeList.getFirst();  // Start from the first block in the free list
+			
+			while (current != null && current.next != null) {  // If there is a block after the current one
+				MemoryBlock currentBlock = current.block;  // Get the current block
+				MemoryBlock nextBlock = current.next.block;  // Get the next block
+				
+				// Check if the two blocks are adjacent (end of currentBlock + length == start of nextBlock)
+				if (currentBlock.getBaseAddress() + currentBlock.getLength() == nextBlock.getBaseAddress()) {
+					// If they are adjacent, merge them into one block
+					MemoryBlock mergedBlock = new MemoryBlock(currentBlock.getBaseAddress(), 
+															  currentBlock.getLength() + nextBlock.getLength());
+					
+					// Remove the next block from the freeList
+					freeList.remove(current.next);
+					
+					// Update the current block to the new merged block
+					current.block = mergedBlock;
+					
+					merged = true;  // Mark that a merge happened
+				}
+	
+				// If no merge happened, move to the next block
+				if (!merged) {
+					current = current.next;
+				}
+			}
+		} while (merged);  // Repeat the loop as long as there were merges in the previous iteration
 	}
+		
 }
