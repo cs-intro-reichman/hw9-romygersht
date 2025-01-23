@@ -104,7 +104,7 @@ public class MemorySpace {
 	public void free(int address) {
 		Node currentNode = allocatedList.getFirst();
 		
-		// If allocatedList is empty, throw an exception with correct message
+		// If allocatedList is empty, throw an exception
 		if (currentNode == null) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
@@ -138,7 +138,7 @@ public class MemorySpace {
 		
 		// If the block was not found in the allocated list, throw an exception
 		throw new IllegalArgumentException("Block with the given address not found in allocated memory");
-	}
+	}	
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
@@ -182,5 +182,6 @@ public class MemorySpace {
 				}
 			}
 		} while (merged);  // Repeat the loop as long as there were merges in the previous iteration
-	}		
+	}
+			
 }
