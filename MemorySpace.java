@@ -87,9 +87,9 @@ public class MemorySpace {
 			// if the block isn't the right size, move to the next one
 			currentNode = currentNode.next;
 		}
-		
 		return -1;  // if no block found, return -1 to indicate allocation failed
 	}
+	
 	
 		
 
@@ -102,7 +102,16 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		//// Write your code here
+		Node currNode = allocatedList.getFirst();
+
+		while (currNode != null) {
+
+			if (currNode.getBaseAddress.equals(address)) {
+
+			}
+
+			currNode = currNode.next;
+		}
 	}
 	
 	/**
