@@ -102,29 +102,45 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
+		// First, check if the allocated list is empty
 		Node currentNode = allocatedList.getFirst();
-	
-		// If the list is empty, and there are no blocks to remove
+		
+		// If allocatedList is empty, throw an exception
 		if (currentNode == null) {
 			throw new IllegalArgumentException("No blocks allocated, cannot free memory");
 		}
-	
+		
 		while (currentNode != null) {
 			MemoryBlock freeBlock = currentNode.block;
-	
-			// If we found the block with the requested address
+			
+			// Check if the address matches the block's base address
 			if (freeBlock.getBaseAddress() == address) {
-				allocatedList.remove(currentNode);  // Remove it from the allocated list
-				freeList.addLast(freeBlock);         // Add it to the free list
-				return;
+				
+				// Check if the block is already in the free list
+				Node freeNode = freeList.getFirst();  // Get the first node in freeList
+				while (freeNode != null) {
+					if (freeNode.block.getBaseAddress() == address) {
+						throw new IllegalArgumentException("Block with the given address has already been freed");
+					}
+					freeNode = freeNode.next;  // Move to the next node
+				}
+	
+				// Remove the block from the allocated list
+				allocatedList.remove(currentNode);
+				
+				// Add it to the free list
+				freeList.addLast(freeBlock);
+				
+				return; // Exit after freeing the block
 			}
-	
-			currentNode = currentNode.next;  // Continue to the next node if not found
+			
+			currentNode = currentNode.next; // Continue to the next node
 		}
-	
-		// If the block was not found in the allocated list
+		
+		// If the block was not found in the allocated list, throw an exception
 		throw new IllegalArgumentException("Block with the given address not found in allocated memory");
 	}
+	
 	
 	
 	/**
