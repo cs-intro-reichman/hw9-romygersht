@@ -102,12 +102,11 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		// First, check if the allocated list is empty
 		Node currentNode = allocatedList.getFirst();
 		
-		// If allocatedList is empty, throw an exception
+		// If allocatedList is empty, throw an exception with correct message
 		if (currentNode == null) {
-			throw new IllegalArgumentException("No blocks allocated, cannot free memory");
+			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 		
 		while (currentNode != null) {
@@ -117,7 +116,7 @@ public class MemorySpace {
 			if (freeBlock.getBaseAddress() == address) {
 				
 				// Check if the block is already in the free list
-				Node freeNode = freeList.getFirst();  // Get the first node in freeList
+				Node freeNode = freeList.getFirst();
 				while (freeNode != null) {
 					if (freeNode.block.getBaseAddress() == address) {
 						throw new IllegalArgumentException("Block with the given address has already been freed");
@@ -140,8 +139,6 @@ public class MemorySpace {
 		// If the block was not found in the allocated list, throw an exception
 		throw new IllegalArgumentException("Block with the given address not found in allocated memory");
 	}
-	
-	
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
@@ -179,14 +176,11 @@ public class MemorySpace {
 					current.block = mergedBlock;
 					
 					merged = true;  // Mark that a merge happened
-				}
-	
-				// If no merge happened, move to the next block
-				if (!merged) {
+				} else {
+					// If no merge happened, move to the next block
 					current = current.next;
 				}
 			}
 		} while (merged);  // Repeat the loop as long as there were merges in the previous iteration
-	}
-		
+	}		
 }
