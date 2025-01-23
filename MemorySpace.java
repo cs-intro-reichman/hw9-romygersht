@@ -103,19 +103,29 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 		Node currentNode = allocatedList.getFirst();
-
+	
+		// If the list is empty, and there are no blocks to remove
+		if (currentNode == null) {
+			throw new IllegalArgumentException("No blocks allocated, cannot free memory");
+		}
+	
 		while (currentNode != null) {
 			MemoryBlock freeBlock = currentNode.block;
-
+	
+			// If we found the block with the requested address
 			if (freeBlock.getBaseAddress() == address) {
-             allocatedList.remove(currentNode);
-			 freeList.addLast(freeBlock);
-			 return;
+				allocatedList.remove(currentNode);  // Remove it from the allocated list
+				freeList.addLast(freeBlock);         // Add it to the free list
+				return;
 			}
-
-			currentNode = currentNode.next;
+	
+			currentNode = currentNode.next;  // Continue to the next node if not found
 		}
+	
+		// If the block was not found in the allocated list
+		throw new IllegalArgumentException("Block with the given address not found in allocated memory");
 	}
+	
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
