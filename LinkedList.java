@@ -118,7 +118,6 @@ public class LinkedList {
 		size++; 
 	}
 	
-	
 
 	/**
 	 * Creates a new node that points to the given memory block, and adds it
@@ -317,15 +316,13 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		if (size == 0) {
-			return "()";
-		}
-	    String str = "(";
-		Node current = first;
-		while (current != null) {
-			str += current.block + " ";
-			current = current.next;
-		}
-		return str.substring(0, str.length()-1) + " ";
+	ListIterator itr = this.iterator();
+	String str = "";
+	while (itr.hasNext()) {
+	str += "(" + itr.current.block.baseAddress + " , " + itr.current.block.length + ") ";
+	itr.next();
 	}
-}
+	return str;
+	}
+	// Removes the trailing space and adds the ‘)’
+	}
