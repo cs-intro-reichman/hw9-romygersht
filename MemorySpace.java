@@ -102,30 +102,33 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		if (allocatedList.getSize() == 0) {
+		
+		if (allocatedList.getSize() == 0) {  
 			throw new IllegalArgumentException("index must be between 0 and size");
-		}
-		// Locate the block to be freed
-		Node current = allocatedList.getFirst();
-		while (current != null) {
-			MemoryBlock block = current.block;
-			if (block.getBaseAddress() == address) {
-				// Remove from allocatedList
-				allocatedList.remove(current);
-
-				// Insert back into freeList
-				freeList.addFirst(block);
-				
-				// Optionally print out the freed block for debugging
-				System.out.println("Block freed: " + block);
-
-				// After freeing, we can trigger defrag to merge adjacent blocks
-				defrag();
-				return;
 			}
-			current = current.next;
-		}
-		System.out.println("Address not found: " + address);
+	  // Find the block in the allocatedList with the given base address
+	  Node currentNode = allocatedList.getFirst();  
+	  Node blockToFree = null;
+	
+	  // Traverse the allocated list to find the block
+	  while (currentNode != null) {
+		  if (currentNode.block.baseAddress == address) {
+			  blockToFree = currentNode;  // Found the block
+			  break;
+		  }
+		  currentNode = currentNode.next;  // Move to the next node in the list
+	  }
+	
+	  // If no block with the given address was found in allocatedList, just return (no-op)
+	  if (blockToFree == null) {
+		  return;  // Ignore the invalid free request, no exception
+	  }
+	
+	  // Remove the block from the allocatedList
+	  allocatedList.remove(blockToFree.block);  
+	
+	  // Add the block to the freeList
+	  freeList.addLast(blockToFree.block);  
 	}
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
@@ -140,40 +143,42 @@ public class MemorySpace {
 	 * Normally, called by malloc, when it fails to find a memory block of the requested size.
 	 * In this implementation Malloc does not call defrag.
 	 */
+	 public void defrag() {
+		// Start from the first node in the free list
+   		Node currentNode = freeList.getFirst();
+		boolean flag =true;
+		boolean flag2 =true;
+	while(currentNode != null){
+		Node runner = freeList.getFirst();
+		while (runner != null){
+			
+			 // Check if the current block and the next block are adjacent
+			 if (currentNode.block.baseAddress + currentNode.block.length == runner.block.baseAddress) {
+				// Merge the blocks
+				currentNode.block.length += runner.block.length;
 	
-public void defrag() {
-    boolean merged; // Flag to indicate if any blocks were merged
-    do {
-        merged = false; // Initially, no merge has occurred
-        Node current = freeList.getFirst(); // Start from the first block in the free list
+				// Remove the next node from the free list (since it has been merged)
+				Node newRemove = runner;
+				runner = runner.next;
+				freeList.remove(newRemove.block);
+				flag = false;
+				flag2 = false;
 
-        while (current != null && current.next != null) { // If there's a next block
-            MemoryBlock currentBlock = current.block; // The current block
-            MemoryBlock nextBlock = current.next.block; // The next block
+	
+			}
+			if (flag2){
+				runner = runner.next;
+			}
+			flag2 = true;
+			
+		}
+		if(flag){
+			currentNode = currentNode.next;
+		}
+		flag = true;
 
-            // If the blocks are adjacent, we can merge them
-            if (currentBlock.getBaseAddress() + currentBlock.getLength() == nextBlock.getBaseAddress()) {
-                // Merge the two blocks into one larger block
-                MemoryBlock mergedBlock = new MemoryBlock(currentBlock.getBaseAddress(),
-                        currentBlock.getLength() + nextBlock.getLength());
-
-                // Remove the next block from the free list
-                freeList.remove(current.next);
-
-                // Update the current block to the merged block
-                current.block = mergedBlock;
-
-                // Set the merged flag to true
-                merged = true;
-            }
-
-            // If no merge occurred, move to the next block
-            if (!merged) {
-                current = current.next;
-            }
-        }
-    } while (merged); // If a merge happened, run the loop again
-}	
+	}
+	}	
 }
 		
 	
