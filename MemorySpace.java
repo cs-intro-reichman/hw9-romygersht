@@ -81,7 +81,7 @@ public class MemorySpace {
 				freeBlock.setLength(freeBlock.getLength() - length);  // update the size of the free block
 				freeBlock.setBaseAddress(freeBlock.getBaseAddress() + length);  // update the address of the free block
 	
-				return allocatedBlock.getBaseAddress();  // returns the new address of the allocated block
+				return allocatedBlock.getBaseAddress(); // returns the new address of the allocated block
 			}
 	
 			// if the block isn't the right size, move to the next one
@@ -102,44 +102,31 @@ public class MemorySpace {
 	 *            the starting address of the block to freeList
 	 */
 	public void free(int address) {
-		Node currentNode = allocatedList.getFirst();
-		
-		// If allocatedList is empty, throw an exception
-		if (currentNode == null) {
+		if (allocatedList.getSize() == 0) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
-		
-		while (currentNode != null) {
-			MemoryBlock freeBlock = currentNode.block;
-			
-			// Check if the address matches the block's base address
-			if (freeBlock.getBaseAddress() == address) {
+		// Locate the block to be freed
+		Node current = allocatedList.getFirst();
+		while (current != null) {
+			MemoryBlock block = current.block;
+			if (block.getBaseAddress() == address) {
+				// Remove from allocatedList
+				allocatedList.remove(current);
+
+				// Insert back into freeList
+				freeList.addFirst(block);
 				
-				// Check if the block is already in the free list
-				Node freeNode = freeList.getFirst();
-				while (freeNode != null) {
-					if (freeNode.block.getBaseAddress() == address) {
-						throw new IllegalArgumentException("Block with the given address has already been freed");
-					}
-					freeNode = freeNode.next;  // Move to the next node
-				}
-	
-				// Remove the block from the allocated list
-				allocatedList.remove(currentNode);
-				
-				// Add it to the free list
-				freeList.addLast(freeBlock);
-				
-				return; // Exit after freeing the block
+				// Optionally print out the freed block for debugging
+				System.out.println("Block freed: " + block);
+
+				// After freeing, we can trigger defrag to merge adjacent blocks
+				defrag();
+				return;
 			}
-			
-			currentNode = currentNode.next; // Continue to the next node
+			current = current.next;
 		}
-		
-		// If the block was not found in the allocated list, throw an exception
-		throw new IllegalArgumentException("Block with the given address not found in allocated memory");
-	}	
-	
+		System.out.println("Address not found: " + address);
+	}
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
 	 * for debugging purposes.
@@ -153,35 +140,41 @@ public class MemorySpace {
 	 * Normally, called by malloc, when it fails to find a memory block of the requested size.
 	 * In this implementation Malloc does not call defrag.
 	 */
-	public void defrag() {
-		boolean merged;  // A flag to track whether any blocks were merged
-		do {
-			merged = false;  // Initially, no blocks have been merged
-			Node current = freeList.getFirst();  // Start from the first block in the free list
-			
-			while (current != null && current.next != null) {  // If there is a block after the current one
-				MemoryBlock currentBlock = current.block;  // Get the current block
-				MemoryBlock nextBlock = current.next.block;  // Get the next block
-				
-				// Check if the two blocks are adjacent (end of currentBlock + length == start of nextBlock)
-				if (currentBlock.getBaseAddress() + currentBlock.getLength() == nextBlock.getBaseAddress()) {
-					// If they are adjacent, merge them into one block
-					MemoryBlock mergedBlock = new MemoryBlock(currentBlock.getBaseAddress(), 
-															  currentBlock.getLength() + nextBlock.getLength());
-					
-					// Remove the next block from the freeList
-					freeList.remove(current.next);
-					
-					// Update the current block to the new merged block
-					current.block = mergedBlock;
-					
-					merged = true;  // Mark that a merge happened
-				} else {
-					// If no merge happened, move to the next block
-					current = current.next;
-				}
-			}
-		} while (merged);  // Repeat the loop as long as there were merges in the previous iteration
-	}
-			
+	
+public void defrag() {
+    boolean merged; // Flag to indicate if any blocks were merged
+    do {
+        merged = false; // Initially, no merge has occurred
+        Node current = freeList.getFirst(); // Start from the first block in the free list
+
+        while (current != null && current.next != null) { // If there's a next block
+            MemoryBlock currentBlock = current.block; // The current block
+            MemoryBlock nextBlock = current.next.block; // The next block
+
+            // If the blocks are adjacent, we can merge them
+            if (currentBlock.getBaseAddress() + currentBlock.getLength() == nextBlock.getBaseAddress()) {
+                // Merge the two blocks into one larger block
+                MemoryBlock mergedBlock = new MemoryBlock(currentBlock.getBaseAddress(),
+                        currentBlock.getLength() + nextBlock.getLength());
+
+                // Remove the next block from the free list
+                freeList.remove(current.next);
+
+                // Update the current block to the merged block
+                current.block = mergedBlock;
+
+                // Set the merged flag to true
+                merged = true;
+            }
+
+            // If no merge occurred, move to the next block
+            if (!merged) {
+                current = current.next;
+            }
+        }
+    } while (merged); // If a merge happened, run the loop again
+}	
 }
+		
+	
+
